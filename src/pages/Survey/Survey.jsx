@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SurveyHeader from "../../components/Header/SurveyHeader";
-import { Container, SelectButton, Input, NextButton, Prompt } from "./SurveyStyle";
+import { Container, SelectButton, Input, NextButton, Prompt, Detail } from "./SurveyStyle";
 
 const Survey = () => {
     const [page, setPage] = useState(0);
@@ -31,7 +31,7 @@ const Survey = () => {
     };
 
     // 셀렉트 필드 렌더링 함수
-    const renderSelectField = (key, text, options) => (
+    const renderSelectField = (key, text, options, detail) => (
         <>
             <Prompt>{text}</Prompt>
 
@@ -48,6 +48,8 @@ const Survey = () => {
                     <option key={idx} value={option.value}>
                         {option.label}
                     </option>
+                    {/* detail의 값이 존재할경우에만 렌더링 */}
+                    {option.detail && <Detail>{option.detail}</Detail>}
                 </SelectButton>
             ))}
             {isSelectFocused && ( //Select가 포커스될때 활성화됨
@@ -137,11 +139,11 @@ const Survey = () => {
                 ]);
             case 3: // 활동 강도
                 return renderSelectField("activityLevel", "평소 활동량을 알려주세요", [
-                    { label: "매우 적음", value: "VERYSMALL" },
-                    { label: "적음", value: "SMALL" },
-                    { label: "보통", value: "NORMAL" },
-                    { label: "많음", value: "BIG" },
-                    { label: "매우 많음", value: "VERYBIG" },
+                    { label: "매우 적음", value: "VERYSMALL", detail: ": 활동이 적고 운동을 전혀 안 할 경우" },
+                    { label: "적음", value: "SMALL", detail: ": 가벼운 활동 및 운동 (1~3일/주)" },
+                    { label: "보통", value: "NORMAL", detail: ": 보통의 활동 및 운동 (3~5일/주)" },
+                    { label: "많음", value: "BIG", detail: ": 적극적인 활동 및 운동 (6~7일/주)" },
+                    { label: "매우 많음", value: "VERYBIG", detail: ": 매우 적극적인 활동 및 운동 " },
                 ]);
             default:
                 return <p>설문조사가 시작되었습니다.</p>;

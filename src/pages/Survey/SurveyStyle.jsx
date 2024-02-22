@@ -43,7 +43,11 @@ export const Input = styled.input`
     background-color: white;
     color: ${darkText}; /* 입력 텍스트 색상을 검은색으로 설정 */
 `;
-
+export const Detail = styled.p`
+    padding-top: 8px;
+    font-size: 13px;
+    color: #6b6b6b;
+`;
 export const SelectButton = styled.button`
     width: 90%;
     height: 70px;
@@ -54,7 +58,7 @@ export const SelectButton = styled.button`
     border-radius: 30px;
     background-color: ${lightGray}; /* 배경색을 옅은 회색으로 설정 */
     color: ${darkText}; /* 글자색을 검은색으로 설정 */
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     //font-weight: 700;
     /* cursor: pointer;
     appearance: none; */
@@ -64,12 +68,21 @@ export const SelectButton = styled.button`
         background-color: ${mintColor}; /* hover 시 배경색을 민트색으로 변경 */
         color: white; /* hover 시 글자색을 흰색으로 변경 */
         //border: 2px solid ${mintColor}; /* hover 시 테두리색을 민트색으로 변경 */
+        // Detail의 글자색상 변화 추가
+        ${Detail} {
+            //자식 컴포넌트인 detail도 hover속성 적용
+            color: white;
+            transition: background-color 0.3s, color 0.3s;
+        }
     }
 
     &:focus {
         background-color: ${mintColor}; /* 포커스 시 테두리색을 민트색으로 변경 */
         color: white;
         outline: none;
+        ${Detail} {
+            color: white;
+        }
     }
     &:active {
         background-color: ${mintColor}; /* 클릭 시 배경색을 민트색으로 변경 */
