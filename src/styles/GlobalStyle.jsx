@@ -5,16 +5,9 @@ const GlobalStyle = createGlobalStyle`
   ${reset};
 
 @font-face {
-    font-family: 'SBAggroB';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
+    font-family: 'SUIT-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Bold.woff2') format('woff2');
+    //font-weight: 900;
     font-style: normal;
 }
 
@@ -23,13 +16,12 @@ const GlobalStyle = createGlobalStyle`
 }
 
 :root {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 body {
   color: inherit;
-  font-family: 'Pretendard-Regular',sans-serif;
-  font-weight: 700;
+  font-family: 'SUIT-Bold';
 }
 
 a {

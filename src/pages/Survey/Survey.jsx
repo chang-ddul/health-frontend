@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Container, SelectButton, Input, NextButton } from "./SurveyStyle";
+import React, { useState, useEffect } from "react";
+import SurveyHeader from "../../components/Header/SurveyHeader";
+import { Container, SelectButton, Input, NextButton, Prompt } from "./SurveyStyle";
 
 const Survey = () => {
     const [page, setPage] = useState(0);
@@ -12,52 +13,47 @@ const Survey = () => {
         activityLevel: "",
     });
     const [isSelectFocused, setIsSelectFocused] = useState(false);
+    const [isInputFilled, setIsInputFilled] = useState(false);
     const handleSelectFocus = () => {
+        //select버튼의 포커스 다룸
         setIsSelectFocused(true);
-    };
-
-    const handleSelectBlur = () => {
-        setIsSelectFocused(false);
-    };
-    const handleInputChange = (key, value) => {
-        setSurveyData({ ...surveyData, [key]: value });
     };
 
     const handleNextClick = () => {
         // 페이지가 4이하일 때 다음 페이지로, 그렇지 않으면 서버로 데이터 전송
         if (page < 4) {
             setPage(page + 1);
+            setIsSelectFocused(false); // 페이지 변경 시 NextButton 비활성화
         } else {
             // 서버로 데이터 전송하는 로직
             console.log("Survey Data:", surveyData);
         }
     };
 
-    // 입력 필드 렌더링 함수
-    const renderInputField = (key, text, type = "text") => (
-        <>
-            <p>{text}</p>
-            <Input type={type} value={surveyData[key]} onChange={(e) => handleInputChange(key, e.target.value)} />
-        </>
-    );
-
     // 셀렉트 필드 렌더링 함수
     const renderSelectField = (key, text, options) => (
         <>
-            <p>{text}</p>
-            <SelectButton value={surveyData[key]} onChange={(e) => handleInputChange(key, e.target.value)}>
-                <option value="">선택하세요</option>
-                {options.map((option, index) => (
-                    <option key={index} value={option.value}>
+            <Prompt>{text}</Prompt>
+
+            {options.map((option, idx) => (
+                <SelectButton
+                    key={idx}
+                    onClick={() => {
+                        handleInputChange(key, option.value);
+                        handleSelectFocus();
+                        console.log("option.value: ", option.value);
+                    }}
+                    onFocus={handleSelectFocus} // 포커스가 되었을 때 상태 변경
+                >
+                    <option key={idx} value={option.value}>
                         {option.label}
                     </option>
-                ))}
-            </SelectButton>
-            {isSelectFocused && (
+                </SelectButton>
+            ))}
+            {isSelectFocused && ( //Select가 포커스될때 활성화됨
                 <NextButton
                     onClick={handleNextClick}
-                    disabled={isNextButtonDisabled()}
-                    style={{ display: "block" }} // Select가 포커스되면 버튼을 보이게 함
+                    style={{ display: "block" }} // Select가 포커스되면 버튼을 block요소로 보이게 함
                 >
                     다음
                 </NextButton>
@@ -65,6 +61,48 @@ const Survey = () => {
         </>
     );
 
+    // 입력 필드가 모두 채워졌는지 확인하는 함수
+    const handleInputFilled = (data) => {
+        // 현재 페이지에 따라 필요한 입력 필드를 확인
+        let allFilled = false;
+        if (page === 1) {
+            // 키, 몸무게, 나이 페이지
+            allFilled = data.height !== "" && data.weight !== "" && data.age !== "";
+        }
+        // 모든 필드가 채워졌는지에 따라 상태 업데이트
+        setIsInputFilled(allFilled);
+    };
+    //입력(선택)값
+    const handleInputChange = (key, value) => {
+        const newData = { ...surveyData, [key]: value };
+        setSurveyData(newData);
+        console.log(newData);
+        handleInputFilled(newData); // 새로운 데이터로 상태확인해서 인풋이 다 채워졌는지 확인
+    };
+    // 입력 필드 렌더링 함수
+    const renderInputFields = (fields) => (
+        <>
+            {fields.map(({ key, text, type }, idx) => (
+                <React.Fragment key={idx}>
+                    <Prompt>{text}</Prompt>
+                    <Input
+                        id={key}
+                        type={type}
+                        value={surveyData[key]}
+                        onChange={(e) => handleInputChange(key, e.target.value)}
+                    />
+                </React.Fragment>
+            ))}
+            {isInputFilled && ( //Select가 포커스될때 활성화됨
+                <NextButton
+                    onClick={handleNextClick}
+                    style={{ display: "block" }} // Select가 포커스되면 버튼을 block요소로 보이게 함
+                >
+                    다음
+                </NextButton>
+            )}
+        </>
+    );
     // 현재 페이지에 따라 렌더링되는 컴포넌트를 결정하는 함수
     const renderQuestion = () => {
         switch (page) {
@@ -74,18 +112,28 @@ const Survey = () => {
                     { label: "여자", value: "female" },
                 ]);
             case 1: // 키, 몸무게, 나이
-                return (
-                    <>
-                        {renderInputField("height", "키를 입력해주세요 (cm)", "number")}
-                        {renderInputField("weight", "몸무게를 입력해주세요 (kg)", "number")}
-                        {renderInputField("age", "나이를 입력해주세요", "number")}
-                    </>
-                );
+                return renderInputFields([
+                    {
+                        key: "height",
+                        text: "키를 입력해주세요 (cm)",
+                        type: "number",
+                    },
+                    {
+                        key: "weight",
+                        text: "몸무게를 입력해주세요 (kg)",
+                        type: "number",
+                    },
+                    {
+                        key: "age",
+                        text: "나이를 입력해주세요",
+                        type: "number",
+                    },
+                ]);
             case 2: // 식단의 목적
                 return renderSelectField("purpose", "식단으로 이루고 싶은 목표를 설정해주세요", [
-                    { label: "다이어트", value: "diet" },
-                    { label: "유지", value: "maintenance" },
-                    { label: "벌크업", value: "bulkup" },
+                    { label: "다이어트", value: "LOSS" },
+                    { label: "유지", value: "MAINTAIN" },
+                    { label: "벌크업", value: "GAIN" },
                 ]);
             case 3: // 활동 강도
                 return renderSelectField("activityLevel", "평소 활동량을 알려주세요", [
@@ -100,22 +148,11 @@ const Survey = () => {
         }
     };
 
-    // '다음' 버튼의 비활성화 여부를 결정하는 함수
-    const isNextButtonDisabled = () => {
-        if (page === 1) {
-            return surveyData.height === "" || surveyData.weight === "" || surveyData.age === "";
-        }
-        const currentKey = Object.keys(surveyData)[page];
-        return surveyData[currentKey] === "";
-    };
-
     return (
-        <Container>
-            {renderQuestion()}
-            <NextButton onClick={handleNextClick} disabled={isNextButtonDisabled()}>
-                다음
-            </NextButton>
-        </Container>
+        <>
+            <SurveyHeader />
+            <Container>{renderQuestion()}</Container>
+        </>
     );
 };
 
