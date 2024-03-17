@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import SurveyHeader from "../../components/Header/SurveyHeader";
+import React, { useState } from "react";
+import Header from "../../components/Header/Header";
 import { Container, SelectButton, Input, NextButton, Prompt, Detail } from "./SurveyStyle";
 
 const Survey = () => {
@@ -19,14 +19,35 @@ const Survey = () => {
         setIsSelectFocused(true);
     };
 
+    const handleDataSubmit = async () => {
+        try {
+            const response = await fetch("여기에 서버 url입력", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(surveyData),
+            });
+            if (!response.ok) {
+                throw new Error("HTTP error! status: ${response.status}");
+            }
+            const result = await response.json();
+            console.log("서버응답:", result);
+            //추가적인 로직 (예:결과페이지로 이동)
+        } catch (error) {
+            console.error("서버로의 전송중 에러발생", error);
+            //에러 처리 로직
+        }
+    };
+
+    //// handleNextClick 함수 내에서 서버 전송 로직 호출
     const handleNextClick = () => {
         // 페이지가 4이하일 때 다음 페이지로, 그렇지 않으면 서버로 데이터 전송
         if (page < 4) {
             setPage(page + 1);
             setIsSelectFocused(false); // 페이지 변경 시 NextButton 비활성화
         } else {
-            // 서버로 데이터 전송하는 로직
-            console.log("Survey Data:", surveyData);
+            handleDataSubmit();
         }
     };
 
@@ -110,8 +131,8 @@ const Survey = () => {
         switch (page) {
             case 0: // 성별
                 return renderSelectField("sex", "성별을 선택해 주세요", [
-                    { label: "남자", value: "male" },
-                    { label: "여자", value: "female" },
+                    { label: "남자", value: "MALE" },
+                    { label: "여자", value: "FEMALE" },
                 ]);
             case 1: // 키, 몸무게, 나이
                 return renderInputFields([
@@ -146,13 +167,13 @@ const Survey = () => {
                     { label: "매우 많음", value: "VERYBIG", detail: ": 매우 적극적인 활동 및 운동 " },
                 ]);
             default:
-                return <p>설문조사가 시작되었습니다.</p>;
+                return <p>분석이 완료 되었습니다.</p>;
         }
     };
 
     return (
         <>
-            <SurveyHeader />
+            <Header />
             <Container>{renderQuestion()}</Container>
         </>
     );

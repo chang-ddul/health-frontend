@@ -1,12 +1,13 @@
 import GlobalStyle from "./styles/GlobalStyle";
 import BasicLayout from "./components/Layout/BasicLayout";
-import Survey from "./pages/Survey/Survey";
+import AppRouter from "./routes/AppRouter";
+
 function App() {
     return (
         <>
             <GlobalStyle />
             <BasicLayout>
-                <Survey />
+                <AppRouter />
             </BasicLayout>
         </>
     );

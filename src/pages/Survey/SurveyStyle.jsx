@@ -34,8 +34,8 @@ export const NextButton = styled.button`
 
 export const Input = styled.input`
     width: 80%;
-    font-size: 20px;
-    padding: 10px;
+    font-size: 17px;
+    padding: 15px;
     margin-bottom: 50px;
     box-sizing: border-box;
     border: 2px solid ${darkText}; /* 테두리색을 검은색으로 설정 */
@@ -46,7 +46,7 @@ export const Input = styled.input`
 export const Detail = styled.p`
     padding-top: 8px;
     font-size: 13px;
-    color: #6b6b6b;
+    color: #a1a1a1;
 `;
 export const SelectButton = styled.button`
     width: 90%;
@@ -58,7 +58,7 @@ export const SelectButton = styled.button`
     border-radius: 30px;
     background-color: ${lightGray}; /* 배경색을 옅은 회색으로 설정 */
     color: ${darkText}; /* 글자색을 검은색으로 설정 */
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     //font-weight: 700;
     /* cursor: pointer;
     appearance: none; */
@@ -91,7 +91,7 @@ export const SelectButton = styled.button`
     }
 `;
 export const Prompt = styled.span`
-    font-size: 2.2rem;
+    font-size: 2rem;
     margin-bottom: 30px; /* 상단과 일정한 거리를 주기 위한 마진 */
     padding: 20px;
     width: 100%; /* 화면 전체 너비를 차지하도록 설정 */
